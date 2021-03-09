@@ -1,0 +1,59 @@
+pipeline {
+    agent {
+        label 'eng-qa-integration-nodejs'
+    }
+
+    options {
+        disableConcurrentBuilds()
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                catchError {
+                    sh "cd automation && npm install"
+                }
+                sh "cd automation && npm run postinstall"
+            }
+        }
+        stage('Run Rapid Test') {
+            steps {
+                catchError {
+                    sh "cd automation && npm run e2e -- --baseUrl=https://profile.crossover.com --params.headlessBrowser=true"
+                }
+            }
+        }
+        stage('Publish Allure Reports') {
+            steps {
+                catchError {
+                    allure([
+                        includeProperties: false,
+                        jdk: '',
+                        properties: [],
+                        reportBuildPolicy: 'ALWAYS',
+                        results: [[path: 'automation/auto-generated/allure-results']]
+                    ])
+                }
+            }
+        }
+        stage ("Publish Html") {
+            steps {
+                publishHTML(target: [
+                        allowMissing         : false,
+                        alwaysLinkToLastBuild: false,
+                        keepAll              : false,
+                        reportDir            : "allure-report",
+                        reportFiles          : "index.html",
+                        reportName           : "HTMLReport"
+                ])
+                junit 'automation/target/*.xml'
+            }
+        }
+    }
+    post {
+        always {
+          sh 'rm -rf allure-report'
+          sh 'rm -rf auto-generated'
+        }
+    }
+}

@@ -1,0 +1,23 @@
+export class Records {
+  Id: string = null;
+  Name: string = null;
+  FirstName: string = null;
+  LastName: string = null;
+  Phone: string = null;
+  PersonEmail: string = null;
+  PersonMailingCity: string = null;
+  Skype_Id__c: string = null;
+  Timezone__c: string = null;
+  PersonMailingCountry: string = null;
+  Avatar__c: string = null;
+  Secondary_Email__c: string = null;
+  Website: string = null;
+  Availability__c: string = null;
+  Last_Password_Recovery__c: string = null;
+  Last_Failed_Login__c: string = null;
+  Last_Successful_Login__c: string = null;
+  Password_Recovery_Count__c: number = null;
+  Successful_Login_Count__c: number = null;
+  Failed_Login_Count__c: number = null;
+  PersonHasOptedOutOfEmail: boolean = null;
+}
